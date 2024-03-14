@@ -3,4 +3,4 @@ node_modules
 # 打包产物
 build
 
-TestNodeServer.tar.gz
+*.tar.gz

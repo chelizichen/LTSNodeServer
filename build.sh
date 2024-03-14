@@ -1,6 +1,6 @@
 #!/bin/bash  
 
-readonly ServerName="TestNodeServer"
+readonly ServerName="LTSNodeServer"
 rm -r ./build
 rm ./$ServerName.tar.gz
 mkdir ./build
