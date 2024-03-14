@@ -33,12 +33,11 @@ export function parseStorageConf(connectionString: string) {
 }
 
 export function parseSimpConf(p: string): SimpConf {
-  console.log("process.env.SIMP_PRODUCTION", process.env.SIMP_PRODUCTION)
-  console.log("process.env.SIMP_SERVER_PATH", process.env.SIMP_SERVER_PATH)
+  const isProd = process.env.SIMP_PRODUCTION === "Yes"
   const cwd = process.cwd()
-  const rootPath =
-    process.env.SIMP_PRODUCTION === "Yes" ? process.env.SIMP_SERVER_PATH : cwd
-  const confPath = path.join(rootPath as string, p || "simp.yaml")
+  const rootPath = isProd ? process.env.SIMP_SERVER_PATH : cwd
+  const fileName = isProd ? "simpProd.yaml" : p || "simp.yaml"
+  const confPath = path.join(rootPath as string, fileName)
   const content = readFileSync(confPath, "utf-8")
   const conf = yaml.load(content) as SimpConf
   return conf
