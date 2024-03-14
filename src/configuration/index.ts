@@ -17,10 +17,10 @@ export async function loadStorage(ctx: Express) {
       password: storageConf.password
     }
   })
+  ctx.set(constant.SIMP_SERVER_STORAGE, conn)
   // eslint-disable-next-line no-constant-condition
   if (true) {
     const t = await conn.table("blog_article").first()
     console.log("t", t)
   }
-  ctx.set(constant.SIMP_SERVER_STORAGE, conn)
 }
