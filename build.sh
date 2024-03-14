@@ -13,5 +13,7 @@ cp package-lock.json ./build/
 
 cd build 
 npm i --production
-cd ..
-tar -cvf $ServerName.tar.gz ./build
+
+tar -cvf $ServerName.tar.gz ./*
+
+mv $ServerName.tar.gz ../

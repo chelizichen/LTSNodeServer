@@ -1,5 +1,5 @@
-import { NewHttpServerCtx, NewSimpHttpServer } from "./lib"
-import routes from "./routes"
+import { NewHttpServerCtx, NewSimpHttpServer } from "./src/lib"
+import routes from "./src/routes"
 
 const ctx = NewHttpServerCtx("simp.yaml")
 
