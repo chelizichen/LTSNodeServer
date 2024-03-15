@@ -3,6 +3,7 @@ import path from "path"
 import { readFileSync } from "fs"
 import { camelCase } from "lodash"
 import dayjs from "dayjs"
+import { dates } from "../../constant"
 export function parseStorageConf(connectionString: string) {
   // 正则表达式用于找到tcp(host:port)部分
   const tcpRegex = /tcp\(([^)]+)\)/
@@ -55,7 +56,7 @@ export function dto2tableFields<T = Record<string, unknown>>(dto): T {
 }
 
 export function dbRsu2Vo<T>(rsu): T {
-  if (rus === null || rsu === undefined) {
+  if (rsu === null || rsu === undefined) {
     return {}
   }
   if (rsu instanceof Array) {
@@ -78,7 +79,7 @@ export function dbRsu2Vo<T>(rsu): T {
 }
 
 export function Now() {
-  return dayjs().format("YYYY-MM-DD HH:mm:ss")
+  return dayjs().format(dates.FMT)
 }
 
 export const Resp = {

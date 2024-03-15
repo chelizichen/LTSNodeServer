@@ -6,6 +6,10 @@ export enum constant {
 export enum tables {
   eff_event = "eff_event"
 }
+
+export enum dates {
+  FMT = "YYYY-MM-DD HH:mm:ss"
+}
 export const NewError = function (code: number, msg: string) {
   return {
     code: code || -1,

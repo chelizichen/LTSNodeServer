@@ -1,19 +1,20 @@
 import { Express } from "express"
 import { constant, tables } from "../constant"
 import { Knex } from "knex"
+
 // 初始化创建表
 export function initTables(ctx: Express) {
   const tableName = tables.eff_event
   const knext = ctx.get(constant.SIMP_SERVER_STORAGE) as Knex
-  knext.schema.hasTable(tableName).then((has) => {
-    console.log("has", has)
-    if (has) {
+  knext.schema.hasTable(tableName).then((exist) => {
+    console.log("exist", exist)
+    if (exist) {
       return
     }
     knext.schema
       .createTable(tableName, function (tableBuilder: Knex.CreateTableBuilder) {
-        tableBuilder.bigIncrements("id").primary().notNullable()
         tableBuilder.dateTime("create_time").notNullable()
+        tableBuilder.bigIncrements("id").primary().notNullable()
         tableBuilder.dateTime("end_time").notNullable()
         tableBuilder.dateTime("start_time").nullable()
         tableBuilder.dateTime("real_end_time").nullable()
