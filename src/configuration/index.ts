@@ -2,6 +2,17 @@ import { Express } from "express"
 import { constant } from "../constant"
 import knex from "knex"
 import { parseStorageConf } from "../lib/utils"
+import { initEventStorage } from "../storage/EffectiveEvent"
+
+export function errorHandler() {
+  return (err, , res) => {
+    res.status(500).send({
+      code: -1,
+      message: err.message
+    })
+  }
+}
+
 
 export async function loadStorage(ctx: Express) {
   const conf = ctx.get(constant.SIMP_SERVER_CONF) as SimpConf["server"]

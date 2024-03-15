@@ -30,3 +30,8 @@ type CamelizeString<T extends PropertyKey> = T extends string
   : T
 
 type Camelize<T> = { [K in keyof T as CamelizeString<K>]: T[K] }
+
+type UnderlineCase<Str extends string> =
+  Str extends `${infer First}${infer Upper}${infer Rest}`
+    ? `${UnderlineChar<First>}${UnderlineChar<Upper>}${UnderlineCase<Rest>}`
+    : Str
