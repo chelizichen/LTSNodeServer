@@ -2,6 +2,7 @@ import yaml from "js-yaml"
 import path from "path"
 import { readFileSync } from "fs"
 import { camelCase } from "lodash"
+import dayjs from "dayjs"
 export function parseStorageConf(connectionString: string) {
   // 正则表达式用于找到tcp(host:port)部分
   const tcpRegex = /tcp\(([^)]+)\)/
@@ -73,5 +74,26 @@ export function dbRsu2Vo<T>(rsu): T {
       tableRecord[field_name] = rsu[key]
     }
     return tableRecord
+  }
+}
+
+export function Now() {
+  return dayjs().format("YYYY-MM-DD HH:mm:ss")
+}
+
+export const Resp = {
+  Ok: function (Data) {
+    return {
+      Code: 0,
+      Message: "ok",
+      Data
+    }
+  },
+  Error: function (Code, Message, Data) {
+    return {
+      Code,
+      Message,
+      Data
+    }
   }
 }

@@ -1,13 +1,16 @@
 import { Knex } from "knex"
 import { tables } from "../constant"
-import { dbRsu2Vo, dto2tableFields } from "../lib/utils"
+import { Now, dbRsu2Vo, dto2tableFields } from "../lib/utils"
+import dayjs from "dayjs"
 
 export function initEventStorage(knex: Knex) {
   const tableName = tables.eff_event
   return {
-    saveEvent: function (dto: Camelize<EffectiveEventsDto>) {
+    saveEvent: async function (dto: Camelize<EffectiveEventsDto>) {
+      dto.createTime = Now()
       const pojo = dto2tableFields<EffectiveEventsPojo>(dto)
-      return knex.insert(pojo, ["id"]).into(tableName)
+      const r = await knex.insert(pojo, ["id"]).into(tableName)
+      return r
     },
     queryEvents: async function (pagination: Pagination) {
       const resp = await knex

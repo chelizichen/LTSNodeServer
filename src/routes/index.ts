@@ -4,6 +4,7 @@ import { Router, Express } from "express"
 import { constant } from "../constant"
 import { Knex } from "knex"
 import { initEventStorage } from "../storage/EffectiveEvent"
+import { Resp } from "../lib/utils"
 
 function routes(ctx: Express): Router {
   const r = Router()
@@ -13,8 +14,11 @@ function routes(ctx: Express): Router {
   r.get("/getEvents", async function (req, res, next) {
     try {
       const query: Pagination = req.query
-      const resp = await storage.queryEvents(query)
-      res.status(200).send(resp)
+      const resp = await storage.queryEvents(query).catch((e) => {
+        console.log("e", e)
+        throw e
+      })
+      res.status(200).json(Resp.Ok(resp))
     } catch (e) {
       next(e)
     }
@@ -23,8 +27,14 @@ function routes(ctx: Express): Router {
   r.post("/saveEvent", async function (req, res, next) {
     try {
       const body: EffectiveEventsDto = req.body
-      const resp = await storage.saveEvent(body)
-      res.status(200).send(resp)
+      storage
+        .saveEvent(body)
+        .then((resp) => {
+          res.status(200).json(Resp.Ok(resp))
+        })
+        .catch((e) => {
+          res.status(403).json(Resp.Error(-1, "saveError", e))
+        })
     } catch (e) {
       next(e)
     }
