@@ -8,16 +8,29 @@ export const paginationValidate = [
 ]
 
 export const saveEventValidate = [
-  body("create_time").default(Now()).isISO8601(),
-  body("end_time").default(Now()).isISO8601(),
-  body("start_time").default(Now()).isISO8601(),
+  body("createTime").default(Now()).isISO8601(),
+  body("endTime").default(Now()).isISO8601(),
+  body("startTime").default(Now()).isISO8601(),
   body("title").isString().ltrim().rtrim().isLength({ max: 10, min: 3 }),
   body("content").isString().isLength({ max: 512 }),
-  body("createby_user_id").default(0).isInt(),
-  body("target_user_id").default(0).isInt()
+  body("createbyUserId").default(0).isInt(),
+  body("targetUserId").default(0).isInt()
 ]
 
 export const changeStatusValidate = [
   check("id").isInt(),
   check("status").isInt()
+]
+
+export const upsertUserValidate = [
+  body("id").default(0).isInt(),
+  body("status").default(0).isInt(),
+  body("userName").isString().trim(),
+  body("createTime").default(Now()).isISO8601(),
+  body("password").isString()
+]
+
+export const changeUserLevelValidate = [
+  check("id").isInt(),
+  check("level").isInt()
 ]

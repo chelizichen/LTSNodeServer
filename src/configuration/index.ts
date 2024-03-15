@@ -2,19 +2,18 @@ import { Express } from "express"
 import { constant } from "../constant"
 import knex from "knex"
 import { Resp, parseStorageConf } from "../lib/utils"
-import { initEventStorage } from "../storage/EffectiveEvent"
 import { validationResult } from "express-validator"
 
 export function errorHandler() {
   return (err, _, res) => {
-    res.status(500).json(Resp.Error(-1, err.message, null))
+    res.status(200).json(Resp.Error(-1, err.message, null))
   }
 }
 
 export function validateMiddleWare(req, res, next) {
   const errors = validationResult(req)
   if (!errors.isEmpty()) {
-    return res.status(422).json(Resp.Error(-1, "validateError", errors.array()))
+    return res.status(200).json(Resp.Error(-1, "validateError", errors.array()))
   }
   next()
 }

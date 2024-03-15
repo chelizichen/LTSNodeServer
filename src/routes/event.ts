@@ -30,7 +30,7 @@ function routes(ctx: Express): Router {
           })
           .catch((e) => {
             console.log("e", e)
-            return res.status(403).json(Resp.Error(-1, "getEvents", e))
+            return res.status(200).json(Resp.Error(-1, "getEvents", e))
           })
       } catch (e) {
         next(e)
@@ -51,7 +51,7 @@ function routes(ctx: Express): Router {
             return res.status(200).json(Resp.Ok(resp))
           })
           .catch((e) => {
-            return res.status(403).json(Resp.Error(-1, "saveError", e))
+            return res.status(200).json(Resp.Error(-1, "saveError", e))
           })
       } catch (e) {
         next(e)

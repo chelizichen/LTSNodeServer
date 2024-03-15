@@ -1,12 +1,16 @@
 import { Knex } from "knex"
 import { tables } from "../constant"
-import { dbRsu2Vo, dto2tableFields } from "../lib/utils"
+import { FMT_DAY, dbRsu2Vo, dto2tableFields } from "../lib/utils"
 
 export function initEventStorage(knex: Knex) {
   const tableName = tables.eff_event
   return {
-    saveEvent: async function (dto: Camelize<EffectiveEventsDto>) {
+    saveEvent: async function (dto: EffectiveEventsDto) {
       const pojo = dto2tableFields<EffectiveEventsPojo>(dto)
+      pojo.create_time = FMT_DAY(pojo.create_time)
+      pojo.end_time = FMT_DAY(pojo.end_time)
+      pojo.start_time = FMT_DAY(pojo.start_time)
+      pojo.real_end_time = FMT_DAY(pojo.real_end_time)
       const r = await knex.insert(pojo, ["id"]).into(tableName)
       return r
     },

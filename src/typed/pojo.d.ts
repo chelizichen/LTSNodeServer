@@ -12,3 +12,16 @@ interface EffectiveEventsPojo {
   event_pay: string
   real_event_pay: string
 }
+
+interface usersPojo {
+  createby_user_name: string
+  target_user_name: string
+}
+
+interface UserPojo {
+  id: number
+  user_name: string
+  create_time: string
+  password: string
+  level: number
+}

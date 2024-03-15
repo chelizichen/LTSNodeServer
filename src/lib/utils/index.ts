@@ -82,6 +82,10 @@ export function Now() {
   return dayjs().format(dates.FMT)
 }
 
+export function FMT_DAY(v) {
+  return dayjs(v).format(dates.FMT)
+}
+
 export const Resp = {
   Ok: function (Data) {
     return {

@@ -4,7 +4,9 @@ export enum constant {
   SIMP_SERVER_STORAGE = "SIMP_SERVER_STORAGE"
 }
 export enum tables {
-  eff_event = "eff_event"
+  eff_event = "eff_event",
+  eff_eve_comment = "eff_eve_comment",
+  blog_user = "blog_user"
 }
 
 export enum dates {
