@@ -1,6 +1,6 @@
 // src/routes/index.ts
 
-import { Router, Express, NextFunction, Request, Response } from "express"
+import e, { Router, Express, NextFunction, Request, Response } from "express"
 import { constant } from "../constant"
 import { Knex } from "knex"
 import { initEventStorage } from "../storage/EffectiveEvent"
@@ -60,6 +60,20 @@ function routes(ctx: Express): Router {
       }
     }
   )
+
+  r.post("/deleteEvent", async function (req, res, next) {
+    try {
+      const query = req.query as unknown as Pick<EffectiveEventsDto, "id">
+      const body = {
+        id: query.id,
+        status: "-2"
+      }
+      const resp = await storage.deleteEvent(body)
+      res.status(200).json(Resp.Ok(resp))
+    } catch (error) {
+      next(e)
+    }
+  })
 
   r.post(
     "/changeStatus",

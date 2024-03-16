@@ -41,6 +41,14 @@ export function initEventStorage(knex: Knex) {
         updateBody.real_event_pay = body.realEventPay
       }
       return await knex(tableName).where("id", body.id).update(updateBody)
+    },
+    deleteEvent: async function (
+      body: Pick<EffectiveEventsDto, "id" | "status">
+    ) {
+      const updateBody: Partial<EffectiveEventsPojo> = {
+        status: body.status
+      }
+      return await knex(tableName).where("id", body.id).update(updateBody)
     }
   }
 }
