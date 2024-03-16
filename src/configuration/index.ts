@@ -5,8 +5,9 @@ import { Resp, parseStorageConf } from "../lib/utils"
 import { validationResult } from "express-validator"
 
 export function errorHandler() {
-  return (err, _, res) => {
-    res.status(200).json(Resp.Error(-1, err.message, null))
+  return (err, req, res, next) => {
+    console.log("err", err)
+    res.json(Resp.Error(-1, err.message, null))
   }
 }
 

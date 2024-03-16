@@ -4,18 +4,20 @@ import { Router, Express, NextFunction, Request, Response } from "express"
 import { constant } from "../constant"
 import { Knex } from "knex"
 import { initEventStorage } from "../storage/EffectiveEvent"
-import { Resp } from "../lib/utils"
+import { Now, Resp } from "../lib/utils"
 import {
   changeStatusValidate,
   saveEventValidate,
   paginationValidate
 } from "../validate"
 import { validateMiddleWare } from "../configuration"
+import { initCommentStorage } from "../storage/Comment"
 
 function routes(ctx: Express): Router {
   const r = Router()
   const knex = ctx.get(constant.SIMP_SERVER_STORAGE) as Knex
   const storage = initEventStorage(knex)
+  const commentStorage = initCommentStorage(knex)
 
   r.get(
     "/getEvents",
@@ -65,7 +67,20 @@ function routes(ctx: Express): Router {
     validateMiddleWare,
     async function (req: Request, res: Response, next: NextFunction) {
       try {
-        const body: Pick<EffectiveEventsDto, "id" | "status"> = req.body
+        const body: Pick<
+          EffectiveEventsDto,
+          "id" | "status" | "realEndTime" | "realEventPay" | "content"
+        > = req.body
+        const comment: Omit<CommentDto, "id"> = {
+          content: body.content,
+          eventId: body.id,
+          status: body.status,
+          targetUserId: 0,
+          createbyUserId: 0,
+          createTime: Now()
+        }
+        const saveCommentResp = await commentStorage.saveComment(comment)
+        console.log("saveCommentResp", saveCommentResp)
         const resp = await storage.changeStatus(body)
         res.status(200).json(Resp.Ok(resp))
       } catch (e) {
@@ -73,6 +88,15 @@ function routes(ctx: Express): Router {
       }
     }
   )
+  r.get("/getCommentsByEventId", async function (req, res, next) {
+    try {
+      const { id } = req.query
+      const data = await commentStorage.getCommentsByEventId(id)
+      res.json(Resp.Ok(data))
+    } catch (e) {
+      next(e)
+    }
+  })
 
   return r
 }

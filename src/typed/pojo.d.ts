@@ -25,3 +25,13 @@ interface UserPojo {
   password: string
   level: number
 }
+
+interface CommentPojo {
+  create_time: string
+  id: number
+  event_id: number
+  status: number
+  createby_user_id: number
+  target_user_id: number
+  content: string
+}

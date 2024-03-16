@@ -9,6 +9,14 @@ export enum tables {
   blog_user = "blog_user"
 }
 
+export enum eventStatus {
+  created = 0,
+  doing = 1,
+  done = 2,
+  overTime = 3,
+  failed = -1
+}
+
 export enum dates {
   FMT = "YYYY-MM-DD HH:mm:ss"
 }

@@ -1,6 +1,6 @@
 import { Knex } from "knex"
-import { tables } from "../constant"
-import { FMT_DAY, dbRsu2Vo, dto2tableFields } from "../lib/utils"
+import { eventStatus, tables } from "../constant"
+import { FMT_DAY, Now, dbRsu2Vo, dto2tableFields } from "../lib/utils"
 
 export function initEventStorage(knex: Knex) {
   const tableName = tables.eff_event
@@ -28,11 +28,19 @@ export function initEventStorage(knex: Knex) {
       return voResp
     },
     changeStatus: async function (
-      body: Pick<EffectiveEventsDto, "id" | "status">
+      body: Pick<
+        EffectiveEventsDto,
+        "id" | "status" | "realEndTime" | "realEventPay"
+      >
     ) {
-      return await knex(tableName).where("id", body.id).update({
+      const updateBody: Partial<EffectiveEventsPojo> = {
         status: body.status
-      })
+      }
+      if ([eventStatus.done, eventStatus.overTime].includes(body.status)) {
+        updateBody.real_end_time = Now()
+        updateBody.real_event_pay = body.realEventPay
+      }
+      return await knex(tableName).where("id", body.id).update(updateBody)
     }
   }
 }
