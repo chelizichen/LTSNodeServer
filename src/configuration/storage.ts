@@ -1,9 +1,15 @@
 import { Express } from "express"
 import { constant, tables } from "../constant"
 import { Knex } from "knex"
+import { NewMainThread } from "../lib"
 
 // 初始化创建表
 export function initTables(ctx: Express) {
+  const isMainThread = NewMainThread()
+  console.log("isMainThread", isMainThread)
+  if (!isMainThread) {
+    return
+  }
   const tableName = tables.eff_event
   const knext = ctx.get(constant.SIMP_SERVER_STORAGE) as Knex
   knext.schema.hasTable(tableName).then((exist) => {
