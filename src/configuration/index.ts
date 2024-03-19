@@ -1,11 +1,21 @@
-import { Express } from "express"
+import { Express, Request, Response, NextFunction } from "express"
 import { constant } from "../constant"
 import knex from "knex"
 import { Resp, parseStorageConf } from "../lib/utils"
 import { validationResult } from "express-validator"
 
+export function targetHandler(ctx: Express) {
+  return function (req: Request, res: Response, next: NextFunction) {
+    res.setHeader(
+      "port",
+      process.env.SIMP_TARGET_PORT || ctx.get(constant.SIMP_SERVER_PORT)
+    )
+    next()
+  }
+}
+
 export function errorHandler() {
-  return (err, req, res, next) => {
+  return (err, req: Request, res: Response, next: NextFunction) => {
     console.log("err", err)
     res.json(Resp.Error(-1, err.message, null))
   }
