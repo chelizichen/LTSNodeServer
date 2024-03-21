@@ -4,6 +4,7 @@ import { constant } from "./src/constant"
 import { NewHttpServerCtx, NewSimpHttpServer } from "./src/lib"
 import events from "./src/routes/event"
 import { errorHandler, targetHandler } from "./src/configuration"
+import { initSchedule } from "./src/schedule"
 
 const ctx = NewHttpServerCtx("simp.yaml")
 ctx.use(targetHandler(ctx))
@@ -14,7 +15,7 @@ ctx.use(servant, events(ctx))
 ctx.use(errorHandler())
 initTables(ctx)
 NewSimpHttpServer(ctx)
-
+initSchedule()
 process.on("uncaughtException", (err) => {
   console.error(err)
 })
