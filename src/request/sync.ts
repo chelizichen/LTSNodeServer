@@ -21,7 +21,7 @@ export function getBasicUrl() {
   })
 }
 
-let userCache: Record<string, string> = {}
+export let userCache: Record<string, string> = {}
 
 export function initSync() {
   setInterval(async () => {
@@ -31,5 +31,15 @@ export function initSync() {
 }
 
 export function getCache(userName: string) {
-  return !!userCache[userName]
+  return userCache[userName]
+}
+
+export function getRemoteCache(user: string) {
+  return syncReq({
+    url: "/getCache",
+    method: "get",
+    params: {
+      user
+    }
+  })
 }

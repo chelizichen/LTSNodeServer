@@ -11,6 +11,7 @@ import {
   paginationValidate,
   upsertUserValidate
 } from "../validate"
+import { userCache } from "../request/sync"
 
 function routes(ctx: Express): Router {
   const r = Router()
@@ -57,6 +58,12 @@ function routes(ctx: Express): Router {
       }
     }
   )
+  r.post("/syncOne", function (req, res) {
+    const name = req.query.name as string
+    const token = req.query.token
+    userCache[name] = token
+    res.json(Resp.Ok("ok"))
+  })
   return r
 }
 

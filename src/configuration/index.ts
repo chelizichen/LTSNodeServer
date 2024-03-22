@@ -1,8 +1,9 @@
-import { Express, Request, Response, NextFunction } from "express"
+import e, { Express, Request, Response, NextFunction } from "express"
 import { constant } from "../constant"
-import knex from "knex"
+import knex, { Knex } from "knex"
 import { Resp, parseStorageConf } from "../lib/utils"
 import { validationResult } from "express-validator"
+import { getRemoteCache, userCache } from "../request/sync"
 
 export function targetHandler(ctx: Express) {
   return function (req: Request, res: Response, next: NextFunction) {
@@ -11,6 +12,28 @@ export function targetHandler(ctx: Express) {
       process.env.SIMP_TARGET_PORT || ctx.get(constant.SIMP_SERVER_PORT)
     )
     next()
+  }
+}
+
+export function tokenValidateHandler() {
+  return async function (req: Request, res: Response, next: NextFunction) {
+    try {
+      const [username, token] = ((req.headers.token || "") as string).split("|")
+      if (!token && username) {
+        const remoteToken = await getRemoteCache(username)
+        if (remoteToken.data.Data) {
+          next(e)
+        } else {
+          res.send(Resp.Error(-1, "token validate error", null))
+        }
+      } else if (username && token && userCache[username] == token) {
+        next()
+      } else {
+        res.send(Resp.Error(-1, "token validate error", null))
+      }
+    } catch (e) {
+      next(e)
+    }
   }
 }
 

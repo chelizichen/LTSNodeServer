@@ -1,5 +1,9 @@
 type EffectiveEventsDto = Camelize<EffectiveEventsPojo>
 
-type UserDto = Camelize<UserPojo>
+interface Token {
+  token: string
+}
+
+type UserDto = Camelize<UserPojo & Token>
 
 type CommentDto = Camelize<CommentPojo>
