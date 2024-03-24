@@ -36,10 +36,13 @@ export function initEventStorage(knex: Knex) {
       const updateBody: Partial<EffectiveEventsPojo> = {
         status: body.status
       }
-      if ([eventStatus.done, eventStatus.overTime].includes(body.status)) {
+      if (
+        [eventStatus.done, eventStatus.overTime].includes(Number(body.status))
+      ) {
         updateBody.real_end_time = Now()
         updateBody.real_event_pay = body.realEventPay
       }
+      console.log("updateBody", JSON.stringify(updateBody))
       return await knex(tableName).where("id", body.id).update(updateBody)
     },
     deleteEvent: async function (
