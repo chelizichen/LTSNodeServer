@@ -20,11 +20,10 @@ export function initEventStorage(knex: Knex) {
         .select("*")
         .from(tableName)
         .where("title", "like", `%${pagination.keyword}%`)
-        .where("status", "!= ", "-2")
+        .where("status ", "!=", "-2")
         .offset(pagination.offset)
         .limit(pagination.size)
       console.log("resp", resp)
-
       const voResp = dbRsu2Vo(resp)
       return voResp
     },
@@ -50,9 +49,14 @@ export function initEventStorage(knex: Knex) {
       body: Pick<EffectiveEventsDto, "id" | "status">
     ) {
       const updateBody: Partial<EffectiveEventsPojo> = {
-        status: body.status
+        status: body.status,
+        id: body.id
       }
-      return await knex(tableName).where("id", body.id).update(updateBody)
+      console.log("updateBody", JSON.stringify(updateBody))
+      const ret = await knex(tableName)
+        .where("id", updateBody.id)
+        .update(updateBody)
+      return ret
     }
   }
 }

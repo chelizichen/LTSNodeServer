@@ -63,7 +63,7 @@ function routes(ctx: Express): Router {
 
   r.post("/deleteEvent", async function (req, res, next) {
     try {
-      const query = req.query as unknown as Pick<EffectiveEventsDto, "id">
+      const query = req.body as unknown as Pick<EffectiveEventsDto, "id">
       const body = {
         id: query.id,
         status: "-2"
