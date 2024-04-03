@@ -20,6 +20,7 @@ export function initEventStorage(knex: Knex) {
         .select("*")
         .from(tableName)
         .where("title", "like", `%${pagination.keyword}%`)
+        .where("status", "!= ", "-2")
         .offset(pagination.offset)
         .limit(pagination.size)
       console.log("resp", resp)
