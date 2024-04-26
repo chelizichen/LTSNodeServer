@@ -7,7 +7,7 @@ mkdir ./build
 
 npm run build
 
-cp ./simp.yaml ./build/
+cp ./sgrid.yml ./build/
 cp package.json ./build/
 cp package-lock.json ./build/
 
