@@ -1,6 +1,10 @@
 import { Knex } from "knex"
 import { tables } from "../constant"
 import { FMT_DAY, dbRsu2Vo, dto2tableFields } from "../lib/utils"
+export interface initCommentStorageResp {
+  saveComment: (dto: Omit<CommentDto, "id">) => Promise<unknown[]>
+  getCommentsByEventId: (id: string) => Promise<Camelize<CommentPojo>[]>
+}
 
 export function initCommentStorage(knex: Knex) {
   const tableName = tables.eff_eve_comment

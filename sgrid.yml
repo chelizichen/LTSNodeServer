@@ -1,0 +1,13 @@
+server:
+  name: LTSNodeServer
+  host: 127.0.0.1
+  port: 18517
+  protoccol: http
+  language: node
+config:
+  db:
+    username: root
+    password: 123456
+    port: 3306
+    host: 127.0.0.1
+    database: simp_server_db

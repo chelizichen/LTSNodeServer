@@ -11,7 +11,7 @@ export function initTables(ctx: Express) {
     return
   }
   const tableName = tables.eff_event
-  const knext = ctx.get(constant.SIMP_SERVER_STORAGE) as Knex
+  const knext = ctx.get(constant.SGRID_DATABASE) as Knex
   knext.schema.hasTable(tableName).then((exist) => {
     console.log("table ", tableName, " exist ", exist)
     if (exist) {

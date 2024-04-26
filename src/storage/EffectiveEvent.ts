@@ -2,6 +2,20 @@ import { Knex } from "knex"
 import { eventStatus, tables } from "../constant"
 import { FMT_DAY, Now, dbRsu2Vo, dto2tableFields } from "../lib/utils"
 
+export interface initEventStorageResp {
+  saveEvent: (dto: EffectiveEventsDto) => Promise<unknown[]>
+  queryEvents: (pagination: Pagination) => Promise<unknown>
+  changeStatus: (
+    body: Pick<
+      EffectiveEventsDto,
+      "id" | "status" | "realEndTime" | "realEventPay"
+    >
+  ) => Promise<number>
+  deleteEvent: (
+    body: Pick<EffectiveEventsDto, "id" | "status">
+  ) => Promise<number>
+}
+
 export function initEventStorage(knex: Knex) {
   const tableName = tables.eff_event
   return {

@@ -3,7 +3,10 @@
 import e, { Router, Express, NextFunction, Request, Response } from "express"
 import { constant } from "../constant"
 import { Knex } from "knex"
-import { initEventStorage } from "../storage/EffectiveEvent"
+import {
+  initEventStorage,
+  initEventStorageResp
+} from "../storage/EffectiveEvent"
 import { Now, Resp } from "../lib/utils"
 import {
   changeStatusValidate,
@@ -11,108 +14,109 @@ import {
   paginationValidate
 } from "../validate"
 import { validateMiddleWare } from "../configuration"
-import { initCommentStorage } from "../storage/Comment"
+import { initCommentStorage, initCommentStorageResp } from "../storage/Comment"
+import { Controller, Get, Post, PreHandle } from "../lib/utils/h"
 
-function routes(ctx: Express): Router {
-  const r = Router()
-  const knex = ctx.get(constant.SIMP_SERVER_STORAGE) as Knex
-  const storage = initEventStorage(knex)
-  const commentStorage = initCommentStorage(knex)
+@Controller("/event")
+class EventController {
+  public ctx: Express
+  public router: Router | undefined
+  public eventStorage: initEventStorageResp
+  public commentStorage: initCommentStorageResp
+  constructor(ctx: Express) {
+    this.ctx = ctx
+    const knex = ctx.get(constant.SGRID_DATABASE) as Knex
+    this.eventStorage = initEventStorage(knex)
+    this.commentStorage = initCommentStorage(knex)
+  }
 
-  r.get(
-    "/getEvents",
-    paginationValidate,
-    function (req: Request, res: Response, next: NextFunction) {
-      try {
-        const query: Pagination = req.query
-        storage
-          .queryEvents(query)
-          .then((resp) => {
-            return res.status(200).json(Resp.Ok(resp))
-          })
-          .catch((e) => {
-            console.log("e", e)
-            return res.status(200).json(Resp.Error(-1, "getEvents", e))
-          })
-      } catch (e) {
-        next(e)
-      }
+  @Get("/getEvents")
+  @PreHandle([paginationValidate])
+  getEvents(req: Request, res: Response, next: NextFunction) {
+    try {
+      const query: Pagination = req.query as unknown as Pagination
+      this.eventStorage
+        .queryEvents(query)
+        .then((resp) => {
+          return res.status(200).json(Resp.Ok(resp))
+        })
+        .catch((e) => {
+          console.log("e", e)
+          return res.status(200).json(Resp.Error(-1, "getEvents", e))
+        })
+    } catch (e) {
+      next(e)
     }
-  )
+  }
 
-  r.post(
-    "/saveEvent",
-    saveEventValidate,
-    validateMiddleWare,
-    async function (req: Request, res: Response, next: NextFunction) {
-      try {
-        const body: EffectiveEventsDto = req.body
-        storage
-          .saveEvent(body)
-          .then((resp) => {
-            return res.status(200).json(Resp.Ok(resp))
-          })
-          .catch((e) => {
-            return res.status(200).json(Resp.Error(-1, "saveError", e))
-          })
-      } catch (e) {
-        next(e)
-      }
+  @Post("/saveEvent")
+  @PreHandle([saveEventValidate, validateMiddleWare])
+  saveEvent(req: Request, res: Response, next: NextFunction) {
+    try {
+      const body: EffectiveEventsDto = req.body
+      this.eventStorage
+        .saveEvent(body)
+        .then((resp) => {
+          return res.status(200).json(Resp.Ok(resp))
+        })
+        .catch((e) => {
+          return res.status(200).json(Resp.Error(-1, "saveError", e))
+        })
+    } catch (e) {
+      next(e)
     }
-  )
+  }
 
-  r.post("/deleteEvent", async function (req, res, next) {
+  @Post("/deleteEvent")
+  async deleteEvent(req: Request, res: Response, next: NextFunction) {
     try {
       const query = req.body as unknown as Pick<EffectiveEventsDto, "id">
       const body = {
         id: query.id,
         status: "-2"
       }
-      const resp = await storage.deleteEvent(body)
+      const resp = await this.eventStorage.deleteEvent(body)
       res.status(200).json(Resp.Ok(resp))
     } catch (error) {
       next(e)
     }
-  })
+  }
 
-  r.post(
-    "/changeStatus",
-    changeStatusValidate,
-    validateMiddleWare,
-    async function (req: Request, res: Response, next: NextFunction) {
-      try {
-        const body: Pick<
-          EffectiveEventsDto,
-          "id" | "status" | "realEndTime" | "realEventPay" | "content"
-        > = req.body
-        const comment: Omit<CommentDto, "id"> = {
-          content: body.content,
-          eventId: body.id,
-          status: body.status,
-          targetUserId: 0,
-          createbyUserId: 0,
-          createTime: Now()
-        }
-        const saveCommentResp = await commentStorage.saveComment(comment)
-        console.log("saveCommentResp", saveCommentResp)
-        const resp = await storage.changeStatus(body)
-        res.status(200).json(Resp.Ok(resp))
-      } catch (e) {
-        next(e)
+  @Post("/changeStatus")
+  @PreHandle([changeStatusValidate, validateMiddleWare])
+  async changeStatus(req: Request, res: Response, next: NextFunction) {
+    try {
+      const body: Pick<
+        EffectiveEventsDto,
+        "id" | "status" | "realEndTime" | "realEventPay" | "content"
+      > = req.body
+      const comment: Omit<CommentDto, "id"> = {
+        content: body.content,
+        eventId: body.id,
+        status: body.status,
+        targetUserId: 0,
+        createbyUserId: 0,
+        createTime: Now()
       }
+      const saveCommentResp = await this.commentStorage.saveComment(comment)
+      console.log("saveCommentResp", saveCommentResp)
+      const resp = await this.eventStorage.changeStatus(body)
+      res.status(200).json(Resp.Ok(resp))
+    } catch (e) {
+      next(e)
     }
-  )
-  r.get("/getCommentsByEventId", async function (req, res, next) {
+  }
+
+  @Get("/getCommentsByEventId")
+  async getCommentsByEventId(req: Request, res: Response, next: NextFunction) {
     try {
       const { id } = req.query
-      const data = await commentStorage.getCommentsByEventId(id)
+      const data = await this.commentStorage.getCommentsByEventId(id as string)
       res.json(Resp.Ok(data))
     } catch (e) {
       next(e)
     }
-  })
-
-  return r
+  }
 }
 
-export default routes
+export default EventController
