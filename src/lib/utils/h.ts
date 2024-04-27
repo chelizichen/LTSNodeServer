@@ -36,12 +36,14 @@ function Controller(i: string) {
         >
         const r = _.get(controller.prototype, "router")
         rm.forEach((value, key) => {
+          const p = i + key
           if (mpm.get(key) == "post") {
-            r.post(i + key, ...value)
+            r.post(p, ...value)
           }
           if (mpm.get(key) == "get") {
-            r.get(i + key, ...value)
+            r.get(p, ...value)
           }
+          console.log(mpm.get(key), p)
         })
       })
     })
@@ -67,6 +69,7 @@ const Get = (r: string) => {
     >
     mpm.set(r, "get")
     context.addInitializer(function () {
+      value = value.bind(this)
       const rm = _.get(context.metadata, CONSTANT.ROUTER_MAP) as Map<
         string,
         Array<handle>
@@ -99,6 +102,7 @@ const Post = (r: string) => {
     >
     mpm.set(r, "post")
     context.addInitializer(function () {
+      value = value.bind(this)
       const rm = _.get(context.metadata, CONSTANT.ROUTER_MAP) as unknown as Map<
         string,
         Array<handle>
@@ -115,6 +119,7 @@ const Post = (r: string) => {
 const PreHandle = (h: Array<unknown>) => {
   return function (value: handle, context: ClassMethodDecoratorContext) {
     context.addInitializer(function () {
+      value = value.bind(this)
       const hmp = _.get(
         context.metadata,
         CONSTANT.HANDL_PATH_MAP

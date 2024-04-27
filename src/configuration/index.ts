@@ -40,7 +40,7 @@ export async function loadStorage(ctx: Express) {
       host: storageConf.host,
       port: Number(storageConf.port),
       user: storageConf.username,
-      password: storageConf.password
+      password: String(storageConf.password)
     }
   })
   ctx.set(constant.SGRID_DATABASE, conn)
