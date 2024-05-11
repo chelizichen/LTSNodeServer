@@ -1,11 +1,11 @@
 import { Express } from "express"
 import { constant, tables } from "../constant"
 import { Knex } from "knex"
-import { NewMainThread } from "../lib"
+import { GetThreadLock } from "sgridnode/build/main"
 
 // 初始化创建表
 export function initTables(ctx: Express) {
-  const isMainThread = NewMainThread()
+  const isMainThread = GetThreadLock()
   console.log("isMainThread", isMainThread)
   if (!isMainThread) {
     return

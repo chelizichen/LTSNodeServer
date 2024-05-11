@@ -1,6 +1,6 @@
 import { Knex } from "knex"
 import { tables } from "../constant"
-import { FMT_DAY, dbRsu2Vo, dto2tableFields } from "../lib/utils"
+import { dto2tableFields, dbRsu2Vo, FMT_DAY } from "sgridnode/build/main"
 export interface initCommentStorageResp {
   saveComment: (dto: Omit<CommentDto, "id">) => Promise<unknown[]>
   getCommentsByEventId: (id: string) => Promise<Camelize<CommentPojo>[]>

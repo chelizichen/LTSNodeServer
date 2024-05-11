@@ -7,7 +7,6 @@ import {
   initEventStorage,
   initEventStorageResp
 } from "../storage/EffectiveEvent"
-import { Now, Resp } from "../lib/utils"
 import {
   changeStatusValidate,
   saveEventValidate,
@@ -15,7 +14,14 @@ import {
 } from "../validate"
 import { validateMiddleWare } from "../configuration"
 import { initCommentStorage, initCommentStorageResp } from "../storage/Comment"
-import { Controller, Get, Post, PreHandle } from "../lib/utils/h"
+import {
+  Resp,
+  Now,
+  Controller,
+  Get,
+  Post,
+  PreHandle
+} from "sgridnode/build/main"
 
 @Controller("/event")
 class EventController {

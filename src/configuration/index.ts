@@ -1,8 +1,9 @@
 import e, { Express, Request, Response, NextFunction } from "express"
 import { constant } from "../constant"
 import knex, { Knex } from "knex"
-import { Resp } from "../lib/utils"
 import { validationResult } from "express-validator"
+import { Resp } from "sgridnode/build/main"
+import { f_env} from 'sgridnode/build/lib/constant/index'
 
 export function targetHandler(ctx: Express) {
   return function (req: Request, res: Response, next: NextFunction) {
@@ -15,7 +16,7 @@ export function targetHandler(ctx: Express) {
 }
 
 export function errorHandler() {
-  return (err, req: Request, res: Response, next: NextFunction) => {
+  return (err, req: Request, res: Response, _: NextFunction) => {
     console.log("err", err)
     res.json(Resp.Error(-1, err.message, null))
   }
@@ -30,7 +31,7 @@ export function validateMiddleWare(req, res, next) {
 }
 
 export async function loadStorage(ctx: Express) {
-  const conf = ctx.get(constant.SGRID_SERVER_CONF) as SimpConf
+  const conf = ctx.get(f_env.ENV_SGRID_CONFIG) as SimpConf
   const storageConf = conf.config.db as Record<string, string>
   console.log("storageConf", storageConf)
   const conn = knex({

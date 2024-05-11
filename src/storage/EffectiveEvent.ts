@@ -1,6 +1,6 @@
 import { Knex } from "knex"
 import { eventStatus, tables } from "../constant"
-import { FMT_DAY, Now, dbRsu2Vo, dto2tableFields } from "../lib/utils"
+import { dto2tableFields, dbRsu2Vo, FMT_DAY, Now } from "sgridnode/build/main"
 
 export interface initEventStorageResp {
   saveEvent: (dto: EffectiveEventsDto) => Promise<unknown[]>

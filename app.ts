@@ -1,9 +1,9 @@
 import path from "path"
 import { initTables } from "./src/configuration/storage"
-import { constant } from "./src/constant"
-import { NewSgridServerCtx, NewSgridServer } from "./src/lib"
 import EventController from "./src/routes/event"
 import { errorHandler, loadStorage, targetHandler } from "./src/configuration"
+import { NewSgridServerCtx, NewSgridServer } from "sgridnode/build/main"
+import { f_env } from "sgridnode/build/lib/constant/index"
 
 function boost() {
   const ctx = NewSgridServerCtx()
@@ -12,7 +12,8 @@ function boost() {
   ctx.use(targetHandler(ctx))
   loadStorage(ctx)
 
-  const conf = ctx.get(constant.SGRID_SERVER_CONF) as SimpConf
+  const conf = ctx.get(f_env.ENV_SGRID_CONFIG) as SimpConf
+  console.info("boost :: SgridConf ", conf)
   const servant = path.join("/", conf.server.name.toLowerCase())
 
   // initController

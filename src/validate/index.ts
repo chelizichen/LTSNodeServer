@@ -1,5 +1,5 @@
 import { body, check, query } from "express-validator"
-import { Now } from "../lib/utils"
+import { Now } from "sgridnode/build/main"
 
 export const paginationValidate = [
   query("offset").default(0).isInt(),
